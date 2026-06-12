@@ -13,21 +13,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Docker build environment
-        run: |
-          docker system prune -a -f
-          docker ps -q --filter "name=termux-packages" | xargs -r docker kill
-          docker ps -aq --filter "name=termux-packages" | xargs -r docker rm
-          docker pull ghcr.io/termux/package-builder:latest
-          docker run -d --name termux-packages \
-            -v $PWD:/home/builder/termux-packages \
-            ghcr.io/termux/package-builder:latest \
-            tail -f /dev/null
+      - name: Enable zram
+        uses: ./.github/actions/zram
+        with:
+          algorithm: zstd
+          size: 16G
+          priority: 100
+          device_name: /dev/zram0
 
       - name: Build bootstrap from source
         run: |
-          docker exec -w /home/builder/termux-packages termux-packages \
-            ./scripts/build-bootstrap-from-source.sh ${{ matrix.target_arch }}
+          ./scripts/run-docker.sh ./scripts/build-bootstrap-from-source.sh ${{ matrix.target_arch }}
 
       - name: Upload bootstrap artifact
         uses: actions/upload-artifact@v4
@@ -35,7 +31,3 @@ jobs:
           name: bootstrap-einkbot-${{ matrix.target_arch }}
           path: ./bootstrap-*.zip
           if-no-files-found: error
-
-      - name: Cleanup Docker container
-        if: always()
-        run: docker rm -f termux-packages || true
