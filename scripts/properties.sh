@@ -371,7 +371,7 @@ fi
 #
 # Default value: `Termux`
 ##
-TERMUX__NAME="Termux"
+TERMUX__NAME="EInkBot"
 
 ##
 # The lower case value for `TERMUX__NAME`.
@@ -402,7 +402,7 @@ TERMUX__UNAME="${TERMUX__NAME^^}"
 #
 # Default value: `termux`
 ##
-TERMUX__INTERNAL_NAME="termux"
+TERMUX__INTERNAL_NAME="einkbot"
 
 ##
 # The regex to validate `TERMUX__INTERNAL_NAME`.
@@ -436,7 +436,7 @@ TERMUX__INTERNAL_NAME___MAX_LEN=7
 #
 # Default value: `termux`
 ##
-TERMUX__REPOS_HOST_ORG_NAME="termux"
+TERMUX__REPOS_HOST_ORG_NAME="yunext280"
 
 ##
 # Termux repositories host organization url.
@@ -464,7 +464,7 @@ TERMUX__REPOS_HOST_ORG_URL="https://github.com/$TERMUX__REPOS_HOST_ORG_NAME"
 #
 # Default value: `com.termux`
 ##
-TERMUX_APP__PACKAGE_NAME="com.termux"
+TERMUX_APP__PACKAGE_NAME="com.einkbot"
 TERMUX_APP_PACKAGE="$TERMUX_APP__PACKAGE_NAME" # Deprecated alternative variable for `TERMUX_APP__PACKAGE_NAME`
 
 __termux_build_props__add_variables_validator_actions "TERMUX_APP__PACKAGE_NAME" "app_package_name"
@@ -1848,7 +1848,7 @@ TERMUX_APP__REPO_URL="$TERMUX__REPOS_HOST_ORG_URL/$TERMUX_APP__REPO_NAME"
 #
 # Default value: `com.termux`
 ##
-TERMUX_APP__NAMESPACE="com.termux"
+TERMUX_APP__NAMESPACE="com.einkbot"
 
 __termux_build_props__add_variables_validator_actions "TERMUX_APP__NAMESPACE" "app_package_name"
 
@@ -1966,7 +1966,7 @@ __termux_build_props__add_variables_validator_actions "TERMUX_APP__AM_SOCKET__SE
 #
 # Default value: `com.termux.api`
 ##
-TERMUX_API_APP__PACKAGE_NAME="com.termux.api"
+TERMUX_API_APP__PACKAGE_NAME="com.einkbot.api"
 
 __termux_build_props__add_variables_validator_actions "TERMUX_API_APP__PACKAGE_NAME" "app_package_name"
 
@@ -2018,7 +2018,7 @@ TERMUX_API_APP__REPO_URL="$TERMUX__REPOS_HOST_ORG_URL/$TERMUX_API_APP__REPO_NAME
 #
 # Default value: `com.termux.api`
 ##
-TERMUX_API_APP__NAMESPACE="com.termux.api"
+TERMUX_API_APP__NAMESPACE="com.einkbot.api"
 
 __termux_build_props__add_variables_validator_actions "TERMUX_API_APP__NAMESPACE" "app_package_name"
 
@@ -2180,13 +2180,13 @@ TERMUX_AM_APP__AM_CLASS__CLASS_NAME="$TERMUX_AM_APP__NAMESPACE.Am"
 # and are compiled locally.
 # FIXME: Checking for all variables will be added later in repo
 # changes pull, currently only `TERMUX_REPO_APP__PACKAGE_NAME` is checked.
-TERMUX_REPO_APP__PACKAGE_NAME="com.termux"
-TERMUX_REPO_APP__DATA_DIR="/data/data/com.termux"
-TERMUX_REPO__CORE_DIR="/data/data/com.termux/termux/core"
-TERMUX_REPO__APPS_DIR="/data/data/com.termux/termux/app"
-TERMUX_REPO__ROOTFS="/data/data/com.termux/files"
-TERMUX_REPO__HOME="/data/data/com.termux/files/home"
-TERMUX_REPO__PREFIX="/data/data/com.termux/files/usr"
+TERMUX_REPO_APP__PACKAGE_NAME="com.einkbot"
+TERMUX_REPO_APP__DATA_DIR="/data/data/com.einkbot"
+TERMUX_REPO__CORE_DIR="/data/data/com.einkbot/einkbot/core"
+TERMUX_REPO__APPS_DIR="/data/data/com.einkbot/einkbot/app"
+TERMUX_REPO__ROOTFS="/data/data/com.einkbot/files"
+TERMUX_REPO__HOME="/data/data/com.einkbot/files/home"
+TERMUX_REPO__PREFIX="/data/data/com.einkbot/files/usr"
 
 
 
@@ -2231,10 +2231,10 @@ TERMUX_CLEANUP_BUILT_PACKAGES_THRESHOLD="$(( 5 * 1024 ** 3 ))" # 5 GiB
 __termux_build_props__add_variables_validator_actions "TERMUX_CLEANUP_BUILT_PACKAGES_THRESHOLD" "unsigned_int"
 
 # Path to CGCT tools
-CGCT_DEFAULT_PREFIX="/data/data/com.termux/files/usr/glibc"
+CGCT_DEFAULT_PREFIX="/data/data/com.einkbot/files/usr/glibc"
 __termux_build_props__add_variables_validator_actions "CGCT_DEFAULT_PREFIX" "safe_absolute_path invalid_termux_prefix_paths"
 
-export CGCT_DIR="/data/data/com.termux/cgct"
+export CGCT_DIR="/data/data/com.einkbot/cgct"
 __termux_build_props__add_variables_validator_actions "CGCT_DIR" "safe_absolute_path invalid_termux_prefix_paths"
 
 # Allow to override setup.
