@@ -134,11 +134,15 @@ termux_setup_toolchain_29() {
 
 
 	if ! mountpoint -q "${TERMUX_STANDALONE_TOOLCHAIN}"; then
-		fuse-overlayfs \
+		if ! fuse-overlayfs \
 			"${TERMUX_STANDALONE_TOOLCHAIN}" \
 			-o lowerdir="${NDK}/toolchains/llvm/prebuilt/linux-x86_64" \
 			-o upperdir="${TERMUX_STANDALONE_TOOLCHAIN}-upper" \
-			-o workdir="${TERMUX_STANDALONE_TOOLCHAIN}-work"
+			-o workdir="${TERMUX_STANDALONE_TOOLCHAIN}-work" 2>/dev/null; then
+			echo "INFO: fuse-overlayfs not available, copying NDK toolchain instead..."
+			cp -a "${NDK}/toolchains/llvm/prebuilt/linux-x86_64"/. \
+				"${TERMUX_STANDALONE_TOOLCHAIN}/"
+		fi
 	fi
 
 	if [ -f "${TERMUX_STANDALONE_TOOLCHAIN}/.termux-standalone-toolchain" ]; then
