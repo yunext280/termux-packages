@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-bootstrap:
+  fix-bootstrap:
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -13,21 +13,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Enable zram
-        uses: ./.github/actions/zram
-        with:
-          algorithm: zstd
-          size: 16G
-          priority: 100
-          device_name: /dev/zram0
+      - name: Install dependencies
+        run: sudo apt-get update -qq && sudo apt-get install -y patchelf zip
 
-      - name: Build bootstrap from source
-        run: |
-          ./scripts/run-docker.sh ./scripts/build-bootstrap-from-source.sh ${{ matrix.target_arch }}
+      - name: Fix bootstrap paths for EInkBot
+        run: ./scripts/fix-bootstrap-paths.sh ${{ matrix.target_arch }}
 
       - name: Upload bootstrap artifact
         uses: actions/upload-artifact@v4
         with:
           name: bootstrap-einkbot-${{ matrix.target_arch }}
-          path: ./bootstrap-*.zip
+          path: ./bootstrap-einkbot-*.zip
           if-no-files-found: error
