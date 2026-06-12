@@ -19,7 +19,7 @@ BOOTSTRAP_PACKAGES=(
 
 echo "::group::Building bootstrap packages for $ARCH"
 echo "Building ${#BOOTSTRAP_PACKAGES[@]} packages..."
-./build-package.sh -I -C -a "$ARCH" "${BOOTSTRAP_PACKAGES[@]}"
+./build-package.sh -I -F -C -a "$ARCH" "${BOOTSTRAP_PACKAGES[@]}"
 echo "::endgroup::"
 
 DEB_FILES=(./output/*.deb)
