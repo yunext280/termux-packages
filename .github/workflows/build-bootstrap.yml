@@ -1,1 +1,41 @@
+name: Build EInkBot Bootstrap
 
+on:
+  workflow_dispatch:
+
+jobs:
+  build-bootstrap:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        target_arch: [aarch64, arm, i686, x86_64]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker build environment
+        run: |
+          docker system prune -a -f
+          docker ps -q --filter "name=termux-packages" | xargs -r docker kill
+          docker ps -aq --filter "name=termux-packages" | xargs -r docker rm
+          docker pull ghcr.io/termux/package-builder:latest
+          docker run -d --name termux-packages \
+            -v $PWD:/home/builder/termux-packages \
+            ghcr.io/termux/package-builder:latest \
+            tail -f /dev/null
+
+      - name: Build bootstrap from source
+        run: |
+          docker exec -w /home/builder/termux-packages termux-packages \
+            ./scripts/build-bootstrap-from-source.sh ${{ matrix.target_arch }}
+
+      - name: Upload bootstrap artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bootstrap-einkbot-${{ matrix.target_arch }}
+          path: ./bootstrap-*.zip
+          if-no-files-found: error
+
+      - name: Cleanup Docker container
+        if: always()
+        run: docker rm -f termux-packages || true
