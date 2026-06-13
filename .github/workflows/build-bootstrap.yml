@@ -16,7 +16,7 @@ jobs:
         run: ./scripts/setup-android-sdk.sh
 
       - name: Build bootstrap packages from source
-        run: ./scripts/build-bootstrap-from-source.sh -a aarch64
+        run: ./scripts/build-bootstrap-from-source.sh aarch64
 
       - name: Upload bootstrap artifact
         uses: actions/upload-artifact@v4
