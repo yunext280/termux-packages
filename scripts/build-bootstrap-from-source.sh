@@ -11,9 +11,9 @@ command -v zip >/dev/null 2>&1 || sudo apt-get install -y zip
 . ./scripts/properties.sh
 
 BOOTSTRAP_PACKAGES=(
-    apt bash bzip2 command-not-found coreutils curl dash diffutils findutils
+    apt bash libbz2 command-not-found coreutils libcurl dash diffutils findutils
     gawk grep gzip less procps psmisc sed tar termux-core termux-exec
-    termux-keyring termux-tools util-linux xz-utils ed debianutils dos2unix
+    termux-keyring termux-tools util-linux liblzma ed debianutils dos2unix
     inetutils lsof nano net-tools patch unzip
 )
 
