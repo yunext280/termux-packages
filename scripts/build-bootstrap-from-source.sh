@@ -19,7 +19,7 @@ BOOTSTRAP_PACKAGES=(
 
 echo "::group::Building bootstrap packages for $ARCH"
 echo "Building ${#BOOTSTRAP_PACKAGES[@]} packages..."
-./build-package.sh -I -F -C -a "$ARCH" "${BOOTSTRAP_PACKAGES[@]}"
+./build-package.sh -F -C -a "$ARCH" "${BOOTSTRAP_PACKAGES[@]}"
 echo "::endgroup::"
 
 DEB_FILES=(./output/*.deb)
@@ -102,7 +102,7 @@ chmod +x "$ROOTFS/${PREFIX}/share/termux/termux-bootstrap-second-stage.sh"
 echo "::endgroup::"
 
 echo "::group::Creating bootstrap zip"
-ZIP_NAME="bootstrap-${ARCH}.zip"
+ZIP_NAME="bootstrap-einkbot-${ARCH}.zip"
 cd "$ROOTFS"
 zip -r -9 "${SCRIPTDIR}/${ZIP_NAME}" . -x "*/\.*" 2>/dev/null
 ZIP_SIZE=$(ls -lh "${SCRIPTDIR}/${ZIP_NAME}" | awk '{print $5}')

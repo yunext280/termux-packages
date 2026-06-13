@@ -1,27 +1,26 @@
-name: Build EInkBot Bootstrap
+name: Build EInkBot Bootstrap from Source
 
 on:
   workflow_dispatch:
 
 jobs:
-  fix-bootstrap:
+  build-bootstrap:
     runs-on: ubuntu-24.04
-    strategy:
-      fail-fast: false
-      matrix:
-        target_arch: [aarch64, arm, i686, x86_64]
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: sudo apt-get update -qq && sudo apt-get install -y patchelf zip
+      - name: Install build dependencies
+        run: ./scripts/setup-ubuntu.sh
 
-      - name: Fix bootstrap paths for EInkBot
-        run: ./scripts/fix-bootstrap-paths.sh ${{ matrix.target_arch }}
+      - name: Setup Android SDK and NDK
+        run: ./scripts/setup-android-sdk.sh
+
+      - name: Build bootstrap packages from source
+        run: ./scripts/build-bootstrap-from-source.sh -a aarch64
 
       - name: Upload bootstrap artifact
         uses: actions/upload-artifact@v4
         with:
-          name: bootstrap-einkbot-${{ matrix.target_arch }}
+          name: bootstrap-einkbot-aarch64
           path: ./bootstrap-einkbot-*.zip
           if-no-files-found: error
