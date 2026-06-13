@@ -79,6 +79,7 @@ done
 echo "::endgroup::"
 
 mkdir -p "$ROOTFS/${PREFIX}/tmp"
+mkdir -p "$ROOTFS/${PREFIX}/share/termux"
 
 echo "::group::Installing second-stage bootstrap"
 BS_DIR="./scripts/bootstrap"
