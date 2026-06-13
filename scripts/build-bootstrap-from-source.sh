@@ -44,8 +44,8 @@ for deb in "${DEB_FILES[@]}"; do
     echo "  Processing $(basename "$deb")..."
     CTRL=$(mktemp -d)
 
-    dpkg-deb -e "$deb" "$CTRL" 2>/dev/null
-    dpkg-deb -x "$deb" "$ROOTFS" 2>/dev/null
+    dpkg-deb -e "$deb" "$CTRL" || { echo "WARNING: dpkg-deb -e failed for $(basename "$deb"), skipping"; rm -rf "$CTRL"; continue; }
+    dpkg-deb -x "$deb" "$ROOTFS" || { echo "WARNING: dpkg-deb -x failed for $(basename "$deb"), skipping"; rm -rf "$CTRL"; continue; }
 
     PKG_NAME=$(grep -E "^Package:" "$CTRL/control" | awk '{print $2}')
     [ -z "$PKG_NAME" ] && { rm -rf "$CTRL"; continue; }
