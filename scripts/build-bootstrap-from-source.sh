@@ -22,6 +22,7 @@ echo "Building ${#BOOTSTRAP_PACKAGES[@]} packages..."
 ./build-package.sh -F -C -a "$ARCH" "${BOOTSTRAP_PACKAGES[@]}"
 echo "::endgroup::"
 
+cd "$SCRIPTDIR"
 DEB_FILES=(./output/*.deb)
 if [ ${#DEB_FILES[@]} -eq 0 ]; then
     echo "ERROR: no .deb files found in output/"
@@ -73,6 +74,7 @@ for deb in "${DEB_FILES[@]}"; do
     done
 
     rm -rf "$CTRL"
+    cd "$SCRIPTDIR"
 done
 echo "::endgroup::"
 
