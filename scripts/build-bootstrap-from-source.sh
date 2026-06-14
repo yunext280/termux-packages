@@ -10,6 +10,12 @@ command -v zip >/dev/null 2>&1 || sudo apt-get install -y zip
 
 . ./scripts/properties.sh
 
+# Export prefix vars for child configure scripts (termux-tools configure.ac
+# checks these, but they're not exported by the build system by default).
+export TERMUX_PREFIX TERMUX_APP_PACKAGE TERMUX_BASE_DIR
+export TERMUX_CACHE_DIR TERMUX_ANDROID_HOME
+export TERMUX_PACKAGE_FORMAT TERMUX_PACKAGE_MANAGER
+
 BOOTSTRAP_PACKAGES=(
     apt bash libbz2 command-not-found coreutils libcurl dash diffutils findutils
     gawk grep gzip less procps psmisc sed tar termux-core termux-exec
@@ -102,6 +108,23 @@ sed \
     > "$ROOTFS/${PREFIX}/share/termux/01-termux-bootstrap-second-stage-fallback.sh"
 
 chmod +x "$ROOTFS/${PREFIX}/share/termux/termux-bootstrap-second-stage.sh"
+echo "::endgroup::"
+
+echo "::group::Fixing hardcoded com.termux paths in extracted files"
+OLD_PREFIX="/data/data/com.termux"
+NEW_PREFIX="/data/data/${TERMUX_APP_PACKAGE}"
+find "$ROOTFS" -type f ! -name '*.gz' ! -name '*.xz' ! -name '*.bz2' ! -name '*.zip' \
+    ! -name '*.png' ! -name '*.jpg' ! -name '*.so.?' ! -name '*.o' ! -name '*.a' \
+    -exec grep -l "$OLD_PREFIX" {} \; 2>/dev/null | while IFS= read -r f; do
+    if file "$f" | grep -q "text"; then
+        sed -i "s|$OLD_PREFIX|$NEW_PREFIX|g" "$f"
+    fi
+done
+
+# Also fix dpkg metadata paths
+find "$ROOTFS/${PREFIX}/var/lib/dpkg" -type f 2>/dev/null | while IFS= read -r f; do
+    sed -i "s|$OLD_PREFIX|$NEW_PREFIX|g" "$f"
+done
 echo "::endgroup::"
 
 echo "::group::Creating SYMLINKS.txt"
