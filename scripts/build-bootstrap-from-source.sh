@@ -104,9 +104,16 @@ sed \
 chmod +x "$ROOTFS/${PREFIX}/share/termux/termux-bootstrap-second-stage.sh"
 echo "::endgroup::"
 
+echo "::group::Creating SYMLINKS.txt"
+cd "$ROOTFS/${PREFIX}"
+while IFS= read -r -d '' link; do
+    echo "$(readlink "$link")←${link}" >> SYMLINKS.txt
+    rm -f "$link"
+done < <(find . -type l -print0)
+echo "::endgroup::"
+
 echo "::group::Creating bootstrap zip"
-ZIP_NAME="bootstrap-einkbot-${ARCH}.zip"
-cd "$ROOTFS"
+ZIP_NAME="bootstrap_einkbot_${ARCH}.zip"
 zip -r -9 "${SCRIPTDIR}/${ZIP_NAME}" . -x "*/\.*" 2>/dev/null
 ZIP_SIZE=$(ls -lh "${SCRIPTDIR}/${ZIP_NAME}" | awk '{print $5}')
 echo "Created: ${ZIP_NAME} (${ZIP_SIZE})"

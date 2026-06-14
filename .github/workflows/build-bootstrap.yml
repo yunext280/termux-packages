@@ -21,6 +21,6 @@ jobs:
       - name: Upload bootstrap artifact
         uses: actions/upload-artifact@v4
         with:
-          name: bootstrap-einkbot-aarch64
-          path: ./bootstrap-einkbot-*.zip
+          name: bootstrap_einkbot_aarch64
+          path: ./bootstrap_einkbot_*.zip
           if-no-files-found: error
