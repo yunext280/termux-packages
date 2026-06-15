@@ -85,7 +85,13 @@ for deb in "${DEB_FILES[@]}"; do
 done
 
 # Remove clang dependency from dpkg-perl since clang is not in bootstrap
-sed -i '/^Package: dpkg-perl$/,/^$/ { s/^Depends:.*clang//g; /^Depends: *$/d }' "$DPKG_DIR/status"
+sed -i '/^Package: dpkg-perl$/,/^$/ {
+  /^Depends:/ {
+    s/,[[:space:]]*clang//g
+    s/clang[[:space:]]*,//g
+    /^Depends:[[:space:]]*$/d
+  }
+}' "$DPKG_DIR/status"
 echo "::endgroup::"
 
 mkdir -p "$ROOTFS/${PREFIX}/tmp"
