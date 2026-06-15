@@ -58,7 +58,7 @@ for deb in "${DEB_FILES[@]}"; do
     [ -z "$PKG_NAME" ] && { rm -rf "$CTRL"; continue; }
 
     dpkg-deb --fsys-tarfile "$deb" | tar -t --no-recursion --exclude='*/' \
-        2>/dev/null | sort | sed "s|^\.||" > "$INFO_DIR/${PKG_NAME}.list" || true
+        2>/dev/null | sort | sed "s|^\.||" | grep -v '^$' > "$INFO_DIR/${PKG_NAME}.list" || true
 
     cd "$ROOTFS"
     : > "$INFO_DIR/${PKG_NAME}.md5sums"
@@ -68,7 +68,7 @@ for deb in "${DEB_FILES[@]}"; do
     done < "$INFO_DIR/${PKG_NAME}.list"
 
     for field in Package Version Architecture Installed-Size Depends Provides \
-                 Replaces Conflicts Description Homepage Essential; do
+                 Replaces Conflicts Description Homepage Essential Maintainer; do
         grep "^${field}:" "$CTRL/control" >> "$DPKG_DIR/status" 2>/dev/null || true
     done
     echo "Status: install ok installed" >> "$DPKG_DIR/status"
@@ -88,6 +88,7 @@ mkdir -p "$ROOTFS/${PREFIX}/tmp"
 mkdir -p "$ROOTFS/${PREFIX}/share/termux"
 mkdir -p "$ROOTFS/${PREFIX}/etc/apt/apt.conf.d"
 mkdir -p "$ROOTFS/${PREFIX}/etc/apt/preferences.d"
+mkdir -p "$ROOTFS/${PREFIX}/var/log/apt"
 
 echo "::group::Installing second-stage bootstrap"
 BS_DIR="./scripts/bootstrap"
