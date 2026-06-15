@@ -7,7 +7,22 @@ jobs:
   build-bootstrap:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Fix Executable Permissions
+        run: |
+          chmod +x scripts/*.sh
+
+      - name: Custom Prefix injection (EInkBot Pack)
+        run: |
+          if [ -f properties.sh ]; then
+            sed -i 's/TERMUX_APP_PACKAGE="com.termux"/TERMUX_APP_PACKAGE="com.einkbot"/g' properties.sh
+            sed -i 's|TERMUX_PREFIX="/data/data/com.termux/files/usr"|TERMUX_PREFIX="/data/data/com.einkbot/files/usr"|g' properties.sh
+            echo "Successfully injected com.einkbot prefix into properties.sh"
+          else
+            echo "Warning: properties.sh not found, looking into scripts..."
+          fi
 
       - name: Install build dependencies
         run: ./scripts/setup-ubuntu.sh
@@ -22,5 +37,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bootstrap_einkbot_aarch64
-          path: ./bootstrap_einkbot_*.zip
+          path: |
+            ./bootstrap_einkbot_*.zip
+            ./bootstrap_einkbot_*.tar.xz
+            ./*.tar.xz
           if-no-files-found: warn
