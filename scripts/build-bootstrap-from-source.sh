@@ -68,9 +68,10 @@ for deb in "${DEB_FILES[@]}"; do
     done < "$INFO_DIR/${PKG_NAME}.list"
 
     for field in Package Version Architecture Installed-Size Depends Provides \
-                 Replaces Conflicts Description Homepage Essential Maintainer; do
+                 Replaces Conflicts Description Homepage Essential; do
         grep "^${field}:" "$CTRL/control" >> "$DPKG_DIR/status" 2>/dev/null || true
     done
+    echo "Maintainer: EInkBot <einkbot@termux.dev>" >> "$DPKG_DIR/status"
     echo "Status: install ok installed" >> "$DPKG_DIR/status"
     echo "" >> "$DPKG_DIR/status"
 
@@ -82,6 +83,9 @@ for deb in "${DEB_FILES[@]}"; do
     rm -rf "$CTRL"
     cd "$SCRIPTDIR"
 done
+
+# Remove clang dependency from dpkg-perl since clang is not in bootstrap
+sed -i '/^Package: dpkg-perl$/,/^$/ { s/^Depends:.*clang//g; /^Depends: *$/d }' "$DPKG_DIR/status"
 echo "::endgroup::"
 
 mkdir -p "$ROOTFS/${PREFIX}/tmp"
