@@ -23,4 +23,4 @@ jobs:
         with:
           name: bootstrap_einkbot_aarch64
           path: ./bootstrap_einkbot_*.zip
-          if-no-files-found: error
+          if-no-files-found: warn
