@@ -33,11 +33,15 @@ jobs:
       - name: Build bootstrap packages from source
         run: ./scripts/build-bootstrap-from-source.sh aarch64
 
+      - name: Package .deb files into tarball
+        run: |
+          mkdir -p ./artifacts
+          tar cf ./artifacts/debs-aarch64.tar -C ./output .
       - name: Upload built .deb packages
         uses: actions/upload-artifact@v4
         with:
           name: debs-aarch64
-          path: ./output/*.deb
+          path: ./artifacts/debs-aarch64.tar
           if-no-files-found: warn
 
       - name: Upload bootstrap artifact
