@@ -1,0 +1,74 @@
+diff -u -r src-orig/src/main/archives.c src/src/main/archives.c
+--- src-orig/src/main/archives.c	2024-03-03 01:30:15.000000000 +0000
++++ src/src/main/archives.c	2024-05-05 20:36:54.148725216 +0000
+@@ -660,6 +660,56 @@
+   return true;
+ }
+
++static void
++tarobject_remap_termux_path(char **namep)
++{
++  char *name = *namep;
++  const char *old_str = "com.termux";
++  char *p, *src, *dst, *new_name;
++  size_t old_len, new_len;
++  int count;
++
++  if (name == NULL)
++    return;
++
++  old_len = strlen(old_str);
++  new_len = strlen("@TERMUX_APP_PACKAGE@");
++
++  if (old_len == new_len) {
++    /* In-place replacement when lengths match (e.g. com.termux). */
++    while ((p = strstr(name, old_str)) != NULL) {
++      memcpy(p, "@TERMUX_APP_PACKAGE@", new_len);
++      p += new_len;
++    }
++    return;
++  }
++
++  /* Count occurrences to allocate exact size. */
++  count = 0;
++  p = strstr(name, old_str);
++  while (p) {
++    count++;
++    p = strstr(p + old_len, old_str);
++  }
++
++  if (count == 0)
++    return;
++
++  new_name = m_malloc(strlen(name) + count * (new_len - old_len) + 1);
++
++  src = name;
++  dst = new_name;
++  while ((p = strstr(src, old_str)) != NULL) {
++    size_t seg_len = p - src;
++    memcpy(dst, src, seg_len);
++    dst += seg_len;
++    memcpy(dst, "@TERMUX_APP_PACKAGE@", new_len);
++    dst += new_len;
++    src = p + old_len;
++  }
++  strcpy(dst, src);
++
++  free(name);
++  *namep = new_name;
++}
++
+ int
+ tarobject(struct tar_archive *tar, struct tar_entry *ti)
+ {
+@@ -682,6 +732,10 @@
+
+   tar_entry_update_from_system(ti);
+
++  /* Remap com.termux -> @TERMUX_APP_PACKAGE@ for forked packages. */
++  tarobject_remap_termux_path(&ti->name);
++  tarobject_remap_termux_path(&ti->linkname);
++
+   /* Perform some sanity checks on the tar entry. */
+   if (strchr(ti->name, '\n'))
+     ohshit(_("newline not allowed in archive object name '%.255s'"), ti->name);
