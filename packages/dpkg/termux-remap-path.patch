@@ -1,7 +1,7 @@
 diff -u -r src-orig/src/main/archives.c src/src/main/archives.c
 --- src-orig/src/main/archives.c	2024-03-03 01:30:15.000000000 +0000
 +++ src/src/main/archives.c	2024-05-05 20:36:54.148725216 +0000
-@@ -660,6 +660,56 @@
+@@ -660,6 +660,59 @@
    return true;
  }
 
@@ -61,7 +61,7 @@ diff -u -r src-orig/src/main/archives.c src/src/main/archives.c
  int
  tarobject(struct tar_archive *tar, struct tar_entry *ti)
  {
-@@ -682,6 +732,10 @@
+@@ -682,6 +735,10 @@
 
    tar_entry_update_from_system(ti);
 
