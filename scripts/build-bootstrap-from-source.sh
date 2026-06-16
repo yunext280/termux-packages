@@ -84,6 +84,9 @@ for deb in "${DEB_FILES[@]}"; do
     cd "$SCRIPTDIR"
 done
 
+# Strip any empty lines from .list files to prevent dpkg errors
+sed -i '/^$/d' "$INFO_DIR"/*.list 2>/dev/null || true
+
 # Remove clang dependency from dpkg-perl since clang is not in bootstrap
 sed -i '/^Package: dpkg-perl$/,/^$/ {
   /^Depends:/ {
